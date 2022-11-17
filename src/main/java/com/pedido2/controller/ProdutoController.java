@@ -1,33 +1,37 @@
 package com.pedido2.controller;
 
-import com.pedido2.domain.dto.request.ProdutoRequestDto;
-import com.pedido2.domain.entity.Produto;
-import com.pedido2.domain.repository.ProdutoRepository;
-import org.modelmapper.ModelMapper;
+import com.pedido2.domain.dto.request.ProdutoRequest;
+import com.pedido2.domain.dto.response.ProdutoSingleResponse;
+import com.pedido2.service.ProdutoService;
+import com.pedido2.service.convert.ProdutoConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+import com.pedido2.domain.entity.Produto;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
 
     @Autowired
-    ModelMapper modelMapper;
+    ProdutoService produtoService;
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    ProdutoConvert produtoConvert;
 
-    @Transactional
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody() @Valid ProdutoRequestDto produtoRequestDto){
-        Produto produto = this.modelMapper.map(produtoRequestDto, Produto.class);
-
-        this.produtoRepository.save(produto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ProdutoSingleResponse> insert(@RequestBody() @Valid ProdutoRequest produtoRequest, UriComponentsBuilder builder) {
+        Produto produto = this.produtoService.insert(produtoConvert.toProduto(produtoRequest));
+        URI uri = builder.path("produtos/{id}").buildAndExpand(produto.getId()).toUri();
+        return ResponseEntity.created(uri).body(produtoConvert.toProdutoResponse(produto));
     }
 
 }

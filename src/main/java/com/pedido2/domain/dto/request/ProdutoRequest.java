@@ -1,6 +1,8 @@
 package com.pedido2.domain.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
@@ -9,20 +11,17 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class ProdutoRequestDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProdutoRequest {
 
-    @NotNull
     @NotEmpty
     private String nome;
 
     @NotNull
-
-    @NotNull
-    @Min(0)
     private Double valor;
 
     @NotNull
-    @Min(0)
     private Integer desconto;
 
     @NotNull
