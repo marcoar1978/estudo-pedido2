@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProdutoConvert {
 
@@ -22,5 +25,13 @@ public class ProdutoConvert {
     public ProdutoSingleResponse toProdutoResponse(Produto produto){
         ProdutoSingleResponse produtoSingleResponse = this.modelMapper.map(produto, ProdutoSingleResponse.class);
         return produtoSingleResponse;
+    }
+
+    public List<ProdutoSingleResponse> toListProdutoResponse(List<Produto> produtos){
+        List<ProdutoSingleResponse> produtosResponse = new ArrayList<>();
+        produtos.forEach(p -> {
+            produtosResponse.add(modelMapper.map(p, ProdutoSingleResponse.class));
+        });
+        return produtosResponse;
     }
 }

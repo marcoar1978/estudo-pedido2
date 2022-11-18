@@ -1,7 +1,6 @@
 package com.pedido2.service;
 
-import com.pedido2.domain.dto.request.ProdutoRequest;
-import com.pedido2.domain.dto.response.ProdutoSingleResponse;
+import com.pedido2.config.exception.ObjectNotFountException;
 import com.pedido2.domain.entity.Produto;
 import com.pedido2.domain.repository.ProdutoRepository;
 import org.modelmapper.ModelMapper;
@@ -11,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -32,5 +33,25 @@ public class ProdutoService {
         return produtoQuery;
     }
 
+    @Transactional
+    public void delete(Integer id) {
+        Optional<Produto> produto = this.produtoRepository.findById(id);
+        if (produto.isPresent()) {
+            this.produtoRepository.delete(produto.get());
+        } else {
+            throw new ObjectNotFountException("Objeto não encontrado");
+        }
+    }
 
+    public List<Produto> getAll(String nome) {
+        if (nome != null) {
+            return this.produtoRepository.searchbyNome(nome);
+        } else {
+            return this.produtoRepository.findAll();
+        }
+    }
+
+    public List<Produto> getByNameCrit(String nome){
+        return this.produtoRepository.findByNameCrit(nome);
+    }
 }

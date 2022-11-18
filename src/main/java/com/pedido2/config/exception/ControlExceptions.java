@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -48,22 +49,25 @@ public class ControlExceptions {
 
     }
 
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
     @ExceptionHandler(ObjectNotFountException.class)
-    public StandardError objectNotFountExceptionHandler(ObjectNotFountException ex, HttpServletRequest request){
-        return StandardError.builder().timestamp(LocalDateTime.now())
+    public ResponseEntity<StandardError> objectNotFountExceptionHandler(ObjectNotFountException ex, HttpServletRequest request){
+        StandardError error =  StandardError.builder().timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error(ex.getMessage())
                 .path(request.getRequestURI()).build();
+
+        return ResponseEntity.notFound().build();
     }
 
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+
     @ExceptionHandler(NoResultException.class)
-    public StandardError NoResultException(NoResultException ex, HttpServletRequest request){
-        return StandardError.builder().timestamp(LocalDateTime.now())
+    public ResponseEntity<StandardError> NoResultException(NoResultException ex, HttpServletRequest request){
+        StandardError error = StandardError.builder().timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error(ex.getMessage())
                 .path(request.getRequestURI()).build();
+
+        return ResponseEntity.notFound().build();
     }
 
 

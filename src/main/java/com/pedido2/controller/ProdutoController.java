@@ -7,15 +7,13 @@ import com.pedido2.service.convert.ProdutoConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.pedido2.domain.entity.Produto;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
@@ -32,6 +30,24 @@ public class ProdutoController {
         Produto produto = this.produtoService.insert(produtoConvert.toProduto(produtoRequest));
         URI uri = builder.path("produtos/{id}").buildAndExpand(produto.getId()).toUri();
         return ResponseEntity.created(uri).body(produtoConvert.toProdutoResponse(produto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id){
+        this.produtoService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProdutoSingleResponse>> getAll(@RequestParam(name = "nome", required = false) String nome){
+        List<ProdutoSingleResponse> produtos = produtoConvert.toListProdutoResponse(this.produtoService.getAll(nome));
+        return ResponseEntity.ok().body(produtos);
+    }
+
+    @GetMapping("/criteria")
+    public ResponseEntity<List<ProdutoSingleResponse>> getByNameCrit(@RequestParam(name = "nome", required = false) String nome){
+        List<ProdutoSingleResponse> produtos = produtoConvert.toListProdutoResponse(this.produtoService.getByNameCrit(nome));
+        return ResponseEntity.ok().body(produtos);
     }
 
 }
