@@ -1,6 +1,7 @@
 package com.pedido2.service;
 
 import com.pedido2.config.exception.ObjectNotFountException;
+import com.pedido2.domain.dto.response.ProdutoSingleResponse;
 import com.pedido2.domain.entity.Produto;
 import com.pedido2.domain.repository.ProdutoRepository;
 import org.modelmapper.ModelMapper;
@@ -51,7 +52,31 @@ public class ProdutoService {
         }
     }
 
-    public List<Produto> getByNameCrit(String nome){
+    public List<Produto> getByNameCrit(String nome) {
         return this.produtoRepository.findByNameCrit(nome);
+    }
+
+    public Produto get(Integer id) {
+        Optional<Produto> produto = this.produtoRepository.findById(id);
+        if (produto.isPresent()) {
+            return produto.get();
+        } else {
+            throw new ObjectNotFountException("Objeto com id " + id + " não encontrado");
+        }
+    }
+
+    @Transactional
+    public Produto put(Integer id, Produto produto){
+        Optional<Produto> produtoManaged = this.produtoRepository.findById(id);
+        if(produtoManaged.isPresent()){
+            produtoManaged.get().setNome(produto.getNome());
+            produtoManaged.get().setValor(produto.getValor());
+            produtoManaged.get().setDesconto(produto.getDesconto());
+            return produtoManaged.get();
+        }
+        else{
+            throw new ObjectNotFountException("Objeto com id " + id + " não encontrado");
+        }
+
     }
 }

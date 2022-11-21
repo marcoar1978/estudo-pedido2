@@ -25,4 +25,5 @@ public class Cliente {
     private String nome;
     private String doc;
     private String email;
+    private Boolean desconto;
 }

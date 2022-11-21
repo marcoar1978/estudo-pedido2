@@ -71,7 +71,7 @@ class ProdutoControllerTest {
     }
 
     @Test
-    public void whenGetByNameCritThenReturnListNotEmpty(){
+    public void whenGetByNameCritThenReturnListNotEmpty() {
         when(this.produtoService.getByNameCrit(anyString())).thenReturn(List.of(PRODUTO));
         when(produtoConvert.toListProdutoResponse(List.of(PRODUTO))).thenReturn(List.of(PRODUTO_RESPONSE));
 
@@ -85,7 +85,7 @@ class ProdutoControllerTest {
     }
 
     @Test
-    public void whenGetByNameCritThenReturnListEmpty(){
+    public void whenGetByNameCritThenReturnListEmpty() {
         when(this.produtoService.getByNameCrit(anyString())).thenReturn(new ArrayList<Produto>());
         when(produtoConvert.toListProdutoResponse(new ArrayList<Produto>())).thenReturn(new ArrayList<ProdutoSingleResponse>());
 
@@ -97,5 +97,33 @@ class ProdutoControllerTest {
         assertEquals(result.getBody().size(), 0);
 
     }
+
+    @Test
+    public void whenGetReturnProdutoResponse() {
+        when(this.produtoService.get(anyInt())).thenReturn(PRODUTO);
+        when(this.produtoConvert.toProdutoResponse(PRODUTO)).thenReturn(PRODUTO_RESPONSE);
+
+        ResponseEntity<ProdutoSingleResponse> result = this.produtoController.get(anyInt());
+
+        assertNotNull(result);
+        assertNotNull(result.getBody());
+        assertEquals(result.getClass(), ResponseEntity.class);
+        assertEquals(result.getBody().getClass(), ProdutoSingleResponse.class);
+    }
+
+    @Test
+    public void whenPutReturnProdutoResponse() {
+        when(this.produtoConvert.toProduto(PRODUTO_REQUEST)).thenReturn(PRODUTO);
+        when(this.produtoService.put(1, PRODUTO)).thenReturn(PRODUTO);
+        when(this.produtoConvert.toProdutoResponse(PRODUTO)).thenReturn(PRODUTO_RESPONSE);
+
+        ResponseEntity<ProdutoSingleResponse> result = this.produtoController.put(1, PRODUTO_REQUEST);
+
+        assertNotNull(result);
+        assertNotNull(result.getBody());
+        assertEquals(result.getClass(), ResponseEntity.class);
+        assertEquals(result.getBody().getClass(), ProdutoSingleResponse.class);
+    }
+
 
 }

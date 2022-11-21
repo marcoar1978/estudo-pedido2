@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.pedido2.constants.MockModels.PRODUTO;
+import static com.pedido2.constants.MockModels.PRODUTO2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -104,6 +105,52 @@ class ProdutoServiceTest {
         assertNotNull(result);
         assertEquals(result.get(0).getClass(), Produto.class);
         assertEquals(result.size(), 1);
+
+    }
+
+    @Test
+    public void whenGetReturnProduto() {
+        when(this.produtoRepository.findById(anyInt())).thenReturn(Optional.of(PRODUTO));
+
+        Produto result = this.produtoService.get(anyInt());
+
+        assertNotNull(result);
+        assertEquals(result.getClass(), Produto.class);
+    }
+
+    @Test
+    public void whenGetReturnException() {
+        when(this.produtoRepository.findById(anyInt())).thenReturn(Optional.ofNullable(null));
+
+        try {
+            Produto result = this.produtoService.get(anyInt());
+
+        } catch (ObjectNotFountException ex) {
+            assertEquals(ex.getClass(), ObjectNotFountException.class);
+        }
+    }
+
+    @Test
+    public void whenPutReturnProduto(){
+        when(this.produtoRepository.findById(anyInt())).thenReturn(Optional.of(PRODUTO));
+
+        Produto result = this.produtoService.put(1, PRODUTO2);
+
+        assertNotNull(result);
+        assertEquals(result.getClass(), Produto.class);
+        assertEquals(result.getNome(), "A garota do lago");
+
+    }
+
+    @Test
+    public void whenPutReturnException(){
+        when(this.produtoRepository.findById(anyInt())).thenReturn(Optional.ofNullable(null));
+        try{
+            Produto result = this.produtoService.put(1, PRODUTO2);
+        } catch (ObjectNotFountException ex){
+            assertEquals(ex.getClass(), ObjectNotFountException.class);
+        }
+
 
     }
 

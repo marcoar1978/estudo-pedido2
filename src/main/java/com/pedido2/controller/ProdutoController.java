@@ -33,21 +33,33 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id){
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         this.produtoService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoSingleResponse>> getAll(@RequestParam(name = "nome", required = false) String nome){
+    public ResponseEntity<List<ProdutoSingleResponse>> getAll(@RequestParam(name = "nome", required = false) String nome) {
         List<ProdutoSingleResponse> produtos = produtoConvert.toListProdutoResponse(this.produtoService.getAll(nome));
         return ResponseEntity.ok().body(produtos);
     }
 
     @GetMapping("/criteria")
-    public ResponseEntity<List<ProdutoSingleResponse>> getByNameCrit(@RequestParam(name = "nome", required = false) String nome){
+    public ResponseEntity<List<ProdutoSingleResponse>> getByNameCrit(@RequestParam(name = "nome", required = false) String nome) {
         List<ProdutoSingleResponse> produtos = produtoConvert.toListProdutoResponse(this.produtoService.getByNameCrit(nome));
         return ResponseEntity.ok().body(produtos);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoSingleResponse> get(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok().body(this.produtoConvert.toProdutoResponse(this.produtoService.get(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoSingleResponse> put(@PathVariable("id") Integer id, @RequestBody @Valid ProdutoRequest produtoRequest) {
+        Produto produto = this.produtoService.put(id, this.produtoConvert.toProduto(produtoRequest));
+        return ResponseEntity.ok().body(this.produtoConvert.toProdutoResponse(produto));
+    }
+
 
 }

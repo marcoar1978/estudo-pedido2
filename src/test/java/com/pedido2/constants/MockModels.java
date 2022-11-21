@@ -32,6 +32,14 @@ public class MockModels {
             44.98,
             5);
 
+    public static final Produto PRODUTO2 = new Produto(2,
+            "A garota do lago",
+            new CategoriaProduto(),
+            50.0,
+            3);
+
+
+
 
 
 }
